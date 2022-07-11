@@ -1,5 +1,11 @@
 PROGNAME = baremetal
 
+ifeq ("$(origin V)", "command line")
+	Q =
+else
+	Q = @
+endif
+
 GCC := $(CROSS_COMPILE)gcc
 LD := $(CROSS_COMPILE)ld
 OBJDUMP := $(CROSS_COMPILE)objdump
