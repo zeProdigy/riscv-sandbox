@@ -18,6 +18,7 @@ PHDRS
 SECTIONS
 {
 	__stack_size = DEFINED(__stack_size) ? __stack_size : 4096;
+	__heap_size = DEFINED(__heap_size) ? __heap_size : 4096;
     PROVIDE(__stack_size = __stack_size);
 
 	.text : ALIGN(4) {
@@ -51,6 +52,12 @@ SECTIONS
         PROVIDE( _sp = . );
         PROVIDE(_stack_end = .);
     } >ram :ram
+
+	.heap (NOLOAD) : ALIGN(16) {
+		PROVIDE(_heap_begin = .);
+		. += __heap_size;
+		PROVIDE(_heap_end = .);
+	} >ram :ram
 
 	PROVIDE(_memory_start = ORIGIN(ram));
 	PROVIDE(_memory_end = ORIGIN(ram) + LENGTH(ram));
