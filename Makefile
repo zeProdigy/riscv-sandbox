@@ -17,7 +17,8 @@ LIBC_INC_PATH = $(dir $(GCC))../riscv64-unknown-elf/include
 SRC_ASM = \
 	system/startup.S \
 	system/memset.S \
-	system/macro.S
+	system/macro.S \
+	priveleges.S
 
 SRC_C = \
 	main.c \
@@ -26,6 +27,7 @@ SRC_C = \
 
 INC = \
 	-Iinclude \
+	-Isystem \
 	-I${LIBC_INC_PATH}
 
 LDSCRIPT = riscv.ld
@@ -47,6 +49,10 @@ OBJS = $(SRC_ASM_OBJ) $(SRC_C_OBJ)
 	@echo "     AS $(notdir $<)"
 	$(Q)$(GCC) $(INC) -c $(CFLAGS) -o $@ $<
 
+priveleges: $(OBJS)
+	$(Q)$(LD) $(INC) $(LDFLAGS) -o priveleges.elf --start-group -lc_nano priveleges.o drivers/ns16550a.o system/syscalls.o --end-group -T $(LDSCRIPT)
+	$(Q)$(OBJDUMP) -dlS priveleges.elf > priveleges.dump
+
 all: $(PROGNAME).bin $(PROGNAME).dump
 
 $(PROGNAME).elf: $(OBJS)
@@ -63,7 +69,7 @@ $(PROGNAME).dump: $(PROGNAME).elf
 
 clean:
 	$(Q)rm -f $(OBJS)
-	$(Q)rm -f $(PROGNAME).elf
+	$(Q)rm -f $(PROGNAME).elf priveleges.elf
 	$(Q)rm -f $(PROGNAME).bin
 	$(Q)rm -f $(PROGNAME).map
-	$(Q)rm -f $(PROGNAME).dump
+	$(Q)rm -f $(PROGNAME).dump priveleges.dump

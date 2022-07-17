@@ -1,4 +1,4 @@
-.macro __reset_context
+.macro __reset_context trap_hander
 mv x1, zero
 mv x2, zero
 mv x3, zero
@@ -44,7 +44,7 @@ la ra, _start
 la sp, _sp
 
 # set MTVEC csr with Trap addr
-la t0, _trap_handler
+la t0, \trap_hander
 csrw mtvec, t0
 
 .option pop

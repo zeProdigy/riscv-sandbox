@@ -10,7 +10,7 @@
 .equ U32_CONST, 0x12345678
 
 _start:
-    __reset_context
+    __reset_context m_trap
 
     /* init console */
     li a0, UART_BAUDRATE
@@ -40,7 +40,7 @@ endless_loop:
  *
  */
 .align 8
-_trap_handler:
+m_trap:
     __save_context
 
     la a0, __trap_msg
